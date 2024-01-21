@@ -10,13 +10,13 @@ from aiogram.types import *
 
 logging.basicConfig(level=logging.INFO)
 
-TOKEN = '6135352272:AAFqzoRvVOsw1uViHnBfZbOYzZJBkXHeWPg'
+TOKEN = 'YOUR BOT TOKEN'
 
 database = Database('database.db')
 bot = Bot(token=TOKEN, parse_mode='html')
 dp = Dispatcher(bot)
 mute_sec = 0
-moderators = ['2051400423', '5309151462', '1149016879', '781297406']
+moderators = ["LIST OF MODERATORS IDS"]
 
 
 @dp.message_handler(commands=['mute'])
@@ -27,11 +27,11 @@ async def mute(message: types.Message):
 
             if message.reply_to_message:
 
-                if message.reply_to_message.from_user.id == 6135352272:
+                if message.reply_to_message.from_user.id == "SOME BOT ID":
                     await message.reply_to_message.reply(
                         f'<b>Невозможно замутить бота, {message.from_user.first_name}!</b>')
 
-                elif message.reply_to_message.from_user.id != 2051400423:
+                elif message.reply_to_message.from_user.id != "ADMIN'S ID":
 
                     mute_sec = int(message.text[6:])
 
@@ -103,20 +103,11 @@ async def unmute(message: types.Message):
 
 @dp.message_handler()
 async def filter_messages(message: types.Message):
-    if "@Qaua_Bot" in message.text:
-        await message.delete()
-
     if not database.examination(message.from_user.id):
         database.add(message.from_user.id)
 
-    if not database.mute(message.from_user.id):
-        pass
-
-    else:
+    if database.mute(message.from_user.id):
         await message.delete()
-        # await bot.send_message(message.from_user.id, f'<b>Сидеть, не рыпаться! '
-        #                                             f'Вас замутили.</b>',
-        #                       parse_mode='html')
 
 
 if __name__ == '__main__':
